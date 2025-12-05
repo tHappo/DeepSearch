@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>DeepSearch Web</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 700px;
+            margin: 50px auto;
+        }
+
+        .input-box {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+        }
+
+        .btn {
+            margin-top: 10px;
+            width: 120px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .result {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<h2>DeepSearch 交互界面</h2>
+
+<input id="question" class="input-box" placeholder="请输入你的搜索内容">
+
+<button class="btn" onclick="send()">发送</button>
+
+<div id="loading" class="loading">⏳ 正在等待 DeepSearch 返回…</div>
+
+<div id="result" class="result"></div>
+
+<script>
+async function send() {
+    let q = document.getElementById("question").value;
+    if (!q.trim()) {
+        alert("请输入内容");
+        return;
+    }
+
+    document.getElementById("loading").style.display = "block";
+    document.getElementById("result").innerText = "";
+
+    const res = await fetch("http://127.0.0.1:5000/ask", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ question: q })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("result").innerText = data.answer;
+}
+</script>
+
+</body>
+</html>
